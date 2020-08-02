@@ -14,8 +14,8 @@ curiosity.addEventListener('click',async ()=>{
 
     // Update state to get Curiosity data by sending action with a payload 
     // get payload  
-    const curiosityImages = await getImageOfTheRover('rover');
-    updateStore(store,{type:'curiosity', payload:curiosityImages})
+    const roverImages = await getImageOfTheRover('curiosity');
+    updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
     
 });
 
@@ -23,8 +23,8 @@ opportunity.addEventListener('click',async ()=>{
 
     // Update state to get Opportunity data by sending action with a payload 
     // get payload  
-    const opportunityImages = await getImageOfTheRover('opportunity');
-    updateStore(store,{type:'opportunity', payload:opportunityImages})
+    const roverImages = await getImageOfTheRover('opportunity');
+    updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
     
 });
 
@@ -33,13 +33,7 @@ opportunity.addEventListener('click',async ()=>{
 const updateStore = async (store, action) => {
 
     switch (action.type) {
-        case 'curiosity':
-            // store = Object.assign(store, {images:action.payload})
-            store = store.merge({roverImages:action.payload})   
-            render(root, store)      
-            break;
-        case 'opportunity':
-            // store = Object.assign(store, {images:action.payload})
+        case 'ADD_ROVER_IMAGES':
             store = store.merge({roverImages:action.payload})   
             render(root, store)      
             break;
@@ -170,10 +164,10 @@ window.addEventListener('load', async () => {
 // Example API call
 const getImageOfTheRover = async (rover) => {
 
-   const arImage = await fetch(`http://localhost:3000/${rover}`)
+   const arrayImg= await fetch(`http://localhost:3000/rover?rover=${rover}`)
         .then(res => res.json())
 
-    return arImage; 
+    return arrayImg; 
   
 }
 

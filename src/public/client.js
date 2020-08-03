@@ -1,34 +1,68 @@
-// const rovers = Immutable.List(['Curiosity', 'Opportunity', 'Spirit'])
+const rovers = Immutable.List(['Curiosity', 'Opportunity', 'Spirit'])
 
 let store = Immutable.Map({
     user_Name: "Student",
-    loading: true,
+    loading: false,
     roverImages:'',
 });
 
 // add our markup to the page
-const root = document.getElementById('root')
-const curiosity = document.getElementById('curiosity');
-const opportunity =document.getElementById('opportunity');
-curiosity.addEventListener('click',async ()=>{
+const root = document.getElementById('root');
 
-    // Update state to get Curiosity data by sending action with a payload 
-    // get payload  
-    const roverImages = await getImageOfTheRover('curiosity');
-    updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
-    
-});
+// create event listeners for every button represening rover
 
-opportunity.addEventListener('click',async ()=>{
+const selector = (rover)=>{
+    document.getElementById(rover).addEventListener('click',async ()=>{
+        updateStore(store,{type:'LOADING',payload:true})
+        const roverImages = await getImageOfTheRover(rover);
+        updateStore(store,{type:'LOADING',payload:false})
+        updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
+        
+    });
+}
 
-    // Update state to get Opportunity data by sending action with a payload 
-    // get payload  
-    const roverImages = await getImageOfTheRover('opportunity');
-    updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
-    
+rovers.forEach(element => {
+    selector(element.toLowerCase());
 });
 
 
+// selector('curiosity');
+// selector('opportunity');
+// selector('spirit');
+
+// const curiosity = document.getElementById('curiosity');
+// const opportunity =document.getElementById('opportunity');
+// const spirit =document.getElementById('spirit');
+
+// curiosity.addEventListener('click',async ()=>{
+
+//     // Update state to get Curiosity data by sending action with a payload 
+//     // get payload  
+//     const roverImages = await getImageOfTheRover('curiosity');
+//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
+    
+// });
+
+// opportunity.addEventListener('click',async ()=>{
+
+//     // Update state to get Opportunity data by sending action with a payload 
+//     // get payload  
+//     const roverImages = await getImageOfTheRover('opportunity');
+//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
+    
+// });
+
+// spirit.addEventListener('click',async ()=>{
+
+//     // Update state to get Opportunity data by sending action with a payload 
+//     // get payload  
+//     const roverImages = await getImageOfTheRover('spirit');
+//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
+    
+// });
+
+
+// use updateStore as the only place that updates store 
 
 const updateStore = async (store, action) => {
 
@@ -37,7 +71,11 @@ const updateStore = async (store, action) => {
             store = store.merge({roverImages:action.payload})   
             render(root, store)      
             break;
-    
+        case 'LOADING':
+            store = store.merge({loading:action.payload})   
+            render(root, store)      
+            break;
+       
         default:
             break;
     }
@@ -48,12 +86,17 @@ const render =  (root, state) => {
     root.innerHTML =  App(state.toJS())
 }
 
+
 const App =  (state) => {
 
-    let {roverImages} = state; 
+    let {roverImages,loading} = state; 
+    if(loading) {
+        return `<h1>Loading...</h1>`
+    }
 
  
     if(!roverImages) { 
+
         return `
         <p> Choose the rover! </>
         `}

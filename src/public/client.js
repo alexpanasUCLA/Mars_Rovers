@@ -4,6 +4,7 @@ let store = Immutable.Map({
     user_Name: "Student",
     loading: false,
     roverImages:'',
+    selectedRover:''
 });
 
 // add our markup to the page
@@ -15,60 +16,24 @@ const selector = (rover)=>{
     document.getElementById(rover).addEventListener('click',async ()=>{
         updateStore(store,{type:'LOADING',payload:true})
         const roverImages = await getImageOfTheRover(rover);
-        updateStore(store,{type:'LOADING',payload:false})
-        updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
+        updateStore(store,{type:'ADD_ROVER_IMAGES', payload:{roverImages,rover}})
+    
         
     });
 }
 
-rovers.forEach(element => {
-    selector(element.toLowerCase());
-});
+// create buttons for rovers 
+rovers.forEach(element => selector(element.toLowerCase()));
 
 
-// selector('curiosity');
-// selector('opportunity');
-// selector('spirit');
-
-// const curiosity = document.getElementById('curiosity');
-// const opportunity =document.getElementById('opportunity');
-// const spirit =document.getElementById('spirit');
-
-// curiosity.addEventListener('click',async ()=>{
-
-//     // Update state to get Curiosity data by sending action with a payload 
-//     // get payload  
-//     const roverImages = await getImageOfTheRover('curiosity');
-//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
-    
-// });
-
-// opportunity.addEventListener('click',async ()=>{
-
-//     // Update state to get Opportunity data by sending action with a payload 
-//     // get payload  
-//     const roverImages = await getImageOfTheRover('opportunity');
-//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
-    
-// });
-
-// spirit.addEventListener('click',async ()=>{
-
-//     // Update state to get Opportunity data by sending action with a payload 
-//     // get payload  
-//     const roverImages = await getImageOfTheRover('spirit');
-//     updateStore(store,{type:'ADD_ROVER_IMAGES', payload:roverImages})
-    
-// });
-
-
-// use updateStore as the only place that updates store 
-
+// the single place to update store 
 const updateStore = async (store, action) => {
 
     switch (action.type) {
         case 'ADD_ROVER_IMAGES':
-            store = store.merge({roverImages:action.payload})   
+
+            store = store.merge({roverImages:action.payload.roverImages, 
+                selectedRover:action.payload.rover})   
             render(root, store)      
             break;
         case 'LOADING':
@@ -89,7 +54,8 @@ const render =  (root, state) => {
 
 const App =  (state) => {
 
-    let {roverImages,loading} = state; 
+    let {roverImages,loading,selectedRover} = state; 
+  
     if(loading) {
         return `<h1>Loading...</h1>`
     }
@@ -102,12 +68,15 @@ const App =  (state) => {
         `}
   
     return `
-        <p>Image of Mars</p>
-        <img src="${roverImages[0]}" height="350px" width="50%" />
-     
-   
+        <p>Image of Mars from ${selectedRover.toUpperCase()} </p>
+        <div id="images">
+        <img src="${roverImages[0]}" />
+        <img src="${roverImages[1]}" />
+        <img src="${roverImages[2]}" />
+        </div>
         `
 }
+
 
 
      
@@ -204,7 +173,7 @@ window.addEventListener('load', async () => {
 //     return state
 // }
 
-// Example API call
+// API call to get images from the selected rover
 const getImageOfTheRover = async (rover) => {
 
    const arrayImg= await fetch(`http://localhost:3000/rover?rover=${rover}`)

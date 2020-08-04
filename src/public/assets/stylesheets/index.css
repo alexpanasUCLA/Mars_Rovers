@@ -11,6 +11,85 @@ header {
   /* header styles */
 }
 
+
+#list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(219, 131, 49);
+  margin: auto;
+}
+ul {
+  list-style: none;
+}
+
+#images {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin:auto;
+  
+}
+
+#images img {
+  width: 75%;
+  margin-bottom: 10px;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  width: 65vw;
+}
+#curiosity {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #4CAF50;
+}
+
+#curiosity:hover {
+  background-color: #4CAF50;
+  color: white;
+
+}
+
+#spirit {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #008CBA;
+}
+
+#spirit:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+#opportunity {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #f44336;
+}
+
+#opportunity:hover {
+  background-color: #f44336;
+  color: white;
+}
+
+
+
+
+
+
 main {
   flex: 1;
   padding: 20px;
@@ -22,13 +101,43 @@ footer {
 
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
-  /* use mobile */
+  #list {
+   
+    flex-direction: row;
+    justify-content: space-evenly;
+
+  }
+
+  .button {
+    width: 20vw;
+  }
+
+  #images {
+
+    flex-direction: row;
+    justify-content: space-evenly;
+    
+  }
+
+  #images img {
+    width: 30%;
+  }
+
+  
 }
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
   /* use mobile */
+  #list {
+   
+    width: 800px; 
+
+  }
+
+
+
 }
 
 /* -------------------  LARGE SCREENS  -------------- */

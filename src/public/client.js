@@ -4,7 +4,11 @@ let store = Immutable.Map({
     user_Name: "Student",
     loading: false,
     roverImages:'',
-    selectedRover:''
+    selectedRover:'',
+    launch_date:'',
+    landing_date:'',
+    status:'',
+    max_date:''
 });
 
 // add our markup to the page
@@ -15,8 +19,15 @@ const root = document.getElementById('root');
 const selector = (rover)=>{
     document.getElementById(rover).addEventListener('click',async ()=>{
         updateStore(store,{type:'LOADING',payload:true})
-        const roverImages = await getImageOfTheRover(rover);
-        updateStore(store,{type:'ADD_ROVER_IMAGES', payload:{roverImages,rover}})
+        const {photos,landing_date,launch_date,max_date,status} = await getRoverData(rover);
+        updateStore(store,{type:'ADD_ROVER_DATA', payload:{
+            photos,
+            rover,
+            launch_date,
+            landing_date,
+            max_date,
+            status
+        }})
     
         
     });
@@ -30,10 +41,17 @@ rovers.forEach(element => selector(element.toLowerCase()));
 const updateStore = async (store, action) => {
 
     switch (action.type) {
-        case 'ADD_ROVER_IMAGES':
+        case 'ADD_ROVER_DATA':
 
-            store = store.merge({roverImages:action.payload.roverImages, 
-                selectedRover:action.payload.rover})   
+            store = store.merge({
+                roverImages:action.payload.photos, 
+                selectedRover:action.payload.rover,
+                status:action.payload.status,
+                launch_date:action.payload.landing_date,
+                max_date:action.payload.max_date,
+                landing_date:action.payload.landing_date,
+
+            })   
             render(root, store)      
             break;
         case 'LOADING':
@@ -54,7 +72,8 @@ const render =  (root, state) => {
 
 const App =  (state) => {
 
-    let {roverImages,loading,selectedRover} = state; 
+    let {roverImages,
+        loading,selectedRover} = state; 
   
     if(loading) {
         return `<h1>Loading...</h1>`
@@ -68,19 +87,36 @@ const App =  (state) => {
         `}
   
     return `
-        <p>Image of Mars from ${selectedRover.toUpperCase()} </p>
+        ${generateRoverInfo(state)}
         <div id="images">
-        <img src="${roverImages[0]}" />
-        <img src="${roverImages[1]}" />
-        <img src="${roverImages[2]}" />
+        ${generateImages(roverImages)}
         </div>
         `
 }
 
-
-
+// Generate section with images from a rover
+const generateImages =(roverImages) =>{
+    return roverImages
+      .map(img => `<img src="${img}" alt="image" ></img>`)
+      .reduce((prev, img) => prev + img);
+  }
      
+const generateRoverInfo = ({selectedRover,launch_date,
+    landing_date,
+    max_date,
+    status})=>{
+    return `
+    <section class="rover-info">
+         <h2>Info on Rover from which images are received.</h2>
+        <p>Name: ${selectedRover.toUpperCase()}</p>
+        <p>Launch date: ${launch_date}</p>
+        <p>Landing Date: ${landing_date}</p>
+        <p>Photos Date: ${max_date}</p>
+        <p>Status: ${status}</p>
+    </section>
 
+    `
+}
 
 
 
@@ -110,7 +146,9 @@ const App =  (state) => {
 //         </main>
 //         <footer></footer>
 //     `
-// }
+  // <img src="${roverImages[0]}" />
+        // <img src="${roverImages[1]}" />
+        // <img src="${roverImages[2]}" />
 
 // // listening for load event because page should load before any JS is called
 window.addEventListener('load', async () => {
@@ -174,12 +212,12 @@ window.addEventListener('load', async () => {
 // }
 
 // API call to get images from the selected rover
-const getImageOfTheRover = async (rover) => {
+const getRoverData = async (rover) => {
 
-   const arrayImg= await fetch(`http://localhost:3000/rover?rover=${rover}`)
+   const data = await fetch(`http://localhost:3000/rover?rover=${rover}`)
         .then(res => res.json())
 
-    return arrayImg; 
+    return data; 
   
 }
 

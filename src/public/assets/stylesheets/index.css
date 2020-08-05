@@ -85,7 +85,12 @@ ul {
   color: white;
 }
 
-
+.rover-info {
+  background-color: rgba(192, 176, 176, 0.612);
+  width:80vw;
+  margin: auto;
+  text-align: center;
+}
 
 
 
@@ -121,6 +126,12 @@ footer {
 
   #images img {
     width: 30%;
+  }
+
+  .rover-info {
+   
+    width:70vw;
+
   }
 
   

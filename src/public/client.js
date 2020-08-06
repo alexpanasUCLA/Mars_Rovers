@@ -33,7 +33,7 @@ const selector = (rover)=>{
 }
 
 // Higher order function that returns other function 
-const arrayToFunctions = (array,callback)=>{
+const arrayToFunctions = (array)=>{
     return function (callback) {
         return array.forEach(el=>callback(el.toLowerCase()))
     }

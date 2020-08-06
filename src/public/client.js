@@ -32,9 +32,17 @@ const selector = (rover)=>{
     });
 }
 
-// create buttons for rovers 
-rovers.forEach(element => selector(element.toLowerCase()));
+// Higher order function that returns other function 
+const arrayToFunctions = (array,callback)=>{
+    return function (callback) {
+        return array.forEach(el=>callback(el.toLowerCase()))
+    }
+}
 
+const roversToFunctions = arrayToFunctions(rovers);
+
+// Use higher order function to create buttons 
+roversToFunctions(selector);
 
 // the single place to update store 
 const updateStore = async (store, action) => {
@@ -68,16 +76,16 @@ const render =  (root, state) => {
     root.innerHTML =  App(state.toJS())
 }
 
-
+// Higher Order Function that returns other functions 
 const App =  (state) => {
 
     let {roverImages,
         loading} = state; 
   
-    if(loading) {
-        return `<h1>Loading...</h1>`
-    }
-
+ 
+    if(loading) { return `${loadingBar()}`};
+    if(!roverImages){return `${chooseRover()}`}
+    
  
     if(!roverImages) { 
 
@@ -91,6 +99,21 @@ const App =  (state) => {
      
         `
 }
+
+
+
+// Component (pure function): Generate Loading Component 
+const loadingBar = ()=>{
+    return `<h1>Loading...</h1>`
+}
+
+// Component (pure function): Generate Component to choose rover
+const chooseRover = ()=>{
+    return `
+    <p> Choose the rover above to get images! </p>`
+    
+}
+
 
 // Component: Generate section with images from a rover
 const generateImages =(roverImages) =>{
